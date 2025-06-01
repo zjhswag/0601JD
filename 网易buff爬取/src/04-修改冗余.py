@@ -28,7 +28,7 @@ with open(json_file_path, 'r', encoding='utf-8') as f:
 market_params = {
     "game": "csgo",
     "page_num": "1",
-    "max_price": "100",
+    "max_price": "300",
     # legendary_weapon,legendary_weapon
     # legendary_weapon是保密，ancient是隐秘，剩下一个是受限
     "rarity": "mythical_weapon,legendary_weapon,ancient_weapon",
