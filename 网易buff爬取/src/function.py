@@ -9,20 +9,64 @@ csgo_url = "https://buff.163.com/market/csgo"
 notification_url = "https://buff.163.com/api/message/notification?"
 
 # 需要修改的地方,notification_url = "https://buff.163.com/api/message/notification?"从这获取，cookie去除session和csrf
-headers = {
-    "Cookie":"_ga=GA1.1.1261352027.1718247638; _ga_C6TGHFPQ1H=GS1.1.1718247637.1.0.1718247671.0.0.0; NTES_CMT_USER_INFO=1203230979%7C%E6%9C%89%E6%80%81%E5%BA%A6%E7%BD%91%E5%8F%8B17JZA3%7Chttp%3A%2F%2Fcms-bucket.nosdn.127.net%2F2018%2F08%2F13%2F078ea9f65d954410b62a52ac773875a1.jpeg%7Cfalse%7CeWQuNzBlMjAyYzRhZmNmNGNmNzhAMTYzLmNvbQ%3D%3D; Device-Id=hQOL5SvXQ4Wo0tXkElVY; Locale-Supported=zh-Hans; game=csgo; NTES_YD_SESS=NA6jGDFs0sVHKb6UNxz0oxuomIh16GSK8ClQ4fViOOZR0UVp0AITEqFz0JGbdqlMjU4APir6ga2uszT5C63.W5.UfB6k_LZfFXOPWlINKDA6Td6_O.ixnGit3FA_O.UqlHgkBqZ2l_8_qW4fjfPdYWFbGYaGXHqRske638ME2EEBTuS8nkGghF5NtUJ6fxdAh._vfqOyTcvikfCXoYSNT5yH6WrawZ6ua9HJl3HglBGeF; S_INFO=1751814333|0|0&60##|16670494952; P_INFO=16670494952|1751814333|1|netease_buff|00&99|gud&1750586301&netease_buff#gud&440100#10#0#0|&0||16670494952; remember_me=U1092505075|cjcLnExRmgag22uH0v94BB78jmsZiTtR",
+# headers = {
+#     "Cookie":"Device-Id=CNJ34cgAjIaMsHaH7Hbj; Locale-Supported=zh-Hans; game=csgo; NTES_YD_SESS=dlqh0q8dQbtt6xaQ_wC6Y.05DnZu7dyYw80EZm5HDDNuqC5iqgFBt6PLqQISw60O_CZglHfG9yKxvLBY8GsUaYUCmjGo.XNmPnDla0Fd3VgGBwG.DUHecIHrsPg.DUC6049oj6NK0.T.6aZm_mlwkaPSIkyIn46uvohGsTOtKttQ_.bkO_DzDDJAUncSKVa10CbmV97kDlfwYk.xWeOijIc4GafypNGxy24Q0s490jIhP; S_INFO=1766302068|0|0&60##|16670494952; P_INFO=16670494952|1766302068|1|netease_buff|00&99|gud&1765437860&netease_buff#gud&440100#10#0#0|&0||16670494952; remember_me=U1092505075|ELofcBSBtGkUxg9PM4WCwjG2rYJrAmzS",
+#     "Host": "buff.163.com",
+#     "Referer": "https://buff.163.com/market/csgo",
+#     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+#     "X-Requested-With": "XMLHttpRequest"
+# }
+#
+# # 需要修改的地方,从"https://buff.163.com/market/csgo"获取,cookie去除csrf,保留session_id
+# headers_csgo = {
+#     "Cookie": "Device-Id=CNJ34cgAjIaMsHaH7Hbj; Locale-Supported=zh-Hans; game=csgo; NTES_YD_SESS=dlqh0q8dQbtt6xaQ_wC6Y.05DnZu7dyYw80EZm5HDDNuqC5iqgFBt6PLqQISw60O_CZglHfG9yKxvLBY8GsUaYUCmjGo.XNmPnDla0Fd3VgGBwG.DUHecIHrsPg.DUC6049oj6NK0.T.6aZm_mlwkaPSIkyIn46uvohGsTOtKttQ_.bkO_DzDDJAUncSKVa10CbmV97kDlfwYk.xWeOijIc4GafypNGxy24Q0s490jIhP; S_INFO=1766302068|0|0&60##|16670494952; P_INFO=16670494952|1766302068|1|netease_buff|00&99|gud&1765437860&netease_buff#gud&440100#10#0#0|&0||16670494952; remember_me=U1092505075|ELofcBSBtGkUxg9PM4WCwjG2rYJrAmzS; session=1-yUMxilJFT8imPvThDdgmmelbUMT4unW9qiWJQke_I9h52043728555",
+#     "Referer": "https://buff.163.com/",
+#     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0   Safari/537.36"
+# }
+
+
+# 账号池配置
+ACCOUNTS = [
+    {
+        "name": "Account_0",
+        # 需要修改的地方,notification_url = "https://buff.163.com/api/message/notification?"从这获取，cookie去除session和csrf
+        "headers": {
+    "Cookie":"Device-Id=L7zN7l3WUU0FHHffDOdn; Locale-Supported=zh-Hans; game=csgo; NTES_YD_SESS=LQ32xgyWusF2PJgpuJhKjVokOSlcZ8hSOZs0yIjWTTzDv4jcvh2dqAKrvl9MXAs8p4yh3WGg7ESVxrd_ZguHQ_H4IwgUifzIKmT3Qs2LRBhgdXgiTHW519W6uKhiTH4AsL2cF5.STqFCF48ghvtHSNxh8A9QpTmzVppXp3xfSRaiGadzFR8PpXBMa1Oz9oqKZEnMlH5tD4VbzAfL213_JuQagQGEnzgVEbalsua7sw9YK; S_INFO=1769940715|0|0&60##|16670494952; P_INFO=16670494952|1769940715|1|netease_buff|00&99|null&null&null#gud&440100#10#0|&0|null|16670494952; remember_me=U1092505075|eCST7zU3UqgUWDyr8Q3XDHOs5HeQcLgw",
     "Host": "buff.163.com",
     "Referer": "https://buff.163.com/market/csgo",
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
     "X-Requested-With": "XMLHttpRequest"
-}
-
-# 需要修改的地方,从"https://buff.163.com/market/csgo"获取,cookie去除csrf,保留session_id
-headers_csgo = {
-    "Cookie": "_ga=GA1.1.1261352027.1718247638; _ga_C6TGHFPQ1H=GS1.1.1718247637.1.0.1718247671.0.0.0; NTES_CMT_USER_INFO=1203230979%7C%E6%9C%89%E6%80%81%E5%BA%A6%E7%BD%91%E5%8F%8B17JZA3%7Chttp%3A%2F%2Fcms-bucket.nosdn.127.net%2F2018%2F08%2F13%2F078ea9f65d954410b62a52ac773875a1.jpeg%7Cfalse%7CeWQuNzBlMjAyYzRhZmNmNGNmNzhAMTYzLmNvbQ%3D%3D; Device-Id=hQOL5SvXQ4Wo0tXkElVY; Locale-Supported=zh-Hans; game=csgo; NTES_YD_SESS=NA6jGDFs0sVHKb6UNxz0oxuomIh16GSK8ClQ4fViOOZR0UVp0AITEqFz0JGbdqlMjU4APir6ga2uszT5C63.W5.UfB6k_LZfFXOPWlINKDA6Td6_O.ixnGit3FA_O.UqlHgkBqZ2l_8_qW4fjfPdYWFbGYaGXHqRske638ME2EEBTuS8nkGghF5NtUJ6fxdAh._vfqOyTcvikfCXoYSNT5yH6WrawZ6ua9HJl3HglBGeF; S_INFO=1751814333|0|0&60##|16670494952; P_INFO=16670494952|1751814333|1|netease_buff|00&99|gud&1750586301&netease_buff#gud&440100#10#0#0|&0||16670494952; remember_me=U1092505075|cjcLnExRmgag22uH0v94BB78jmsZiTtR; session=1-q69G2CI2F6WCUwkUvqHq8ial4NZSdWYd_KtCzkJDLkNc2043728555",
+        },
+        "headers_csgo": {
+    "Cookie": "Device-Id=L7zN7l3WUU0FHHffDOdn; Locale-Supported=zh-Hans; game=csgo; NTES_YD_SESS=LQ32xgyWusF2PJgpuJhKjVokOSlcZ8hSOZs0yIjWTTzDv4jcvh2dqAKrvl9MXAs8p4yh3WGg7ESVxrd_ZguHQ_H4IwgUifzIKmT3Qs2LRBhgdXgiTHW519W6uKhiTH4AsL2cF5.STqFCF48ghvtHSNxh8A9QpTmzVppXp3xfSRaiGadzFR8PpXBMa1Oz9oqKZEnMlH5tD4VbzAfL213_JuQagQGEnzgVEbalsua7sw9YK; S_INFO=1769940715|0|0&60##|16670494952; P_INFO=16670494952|1769940715|1|netease_buff|00&99|null&null&null#gud&440100#10#0|&0|null|16670494952; remember_me=U1092505075|eCST7zU3UqgUWDyr8Q3XDHOs5HeQcLgw; session=1-nneu4i7r63k-eZD1EYjiS7tSc9TVSpotE_vQwemLPizR2043728555",
     "Referer": "https://buff.163.com/",
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
-}
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0   Safari/537.36"
+                        }
+
+    }
+#     ,
+#     #xiaohao
+#     {
+#         "name": "Account_1",
+#         "headers": {
+#     "Cookie":"Device-Id=cU3NwGMCWrayZcEqoV0G; Locale-Supported=zh-Hans; game=csgo; NTES_YD_SESS=ejo4yGvperDa_BERC7Ed_WK6QO4sy0JDwsNTu.GSqqxtd3GbdnHABw45d8iQhwN093unZS_pcDarL5AIspzKOIK3.gpP2Yx.4kqZONHey6npAhp2qKSfoiSjz4n2qK3wNRcPgwxaN2v2wOu.9.ZhFO4QiFDikRwtLPmpzv0BaBB81AskldA9JXKAZnhEa.6rOitx92U8jqxDbtSnqlQETRVRpO_D7xprDWR8NzRcNgim4; S_INFO=1766906853|0|0&60##|16670494952; P_INFO=16670494952|1766906853|1|netease_buff|00&99|gud&1766302068&netease_buff#gud&440100#10#0#0|&0||16670494952; r_ntcid=730:222; qr_code_verify_ticket=194FwfG16d39c99830672c3870dea3d332d8; remember_me=U1084862224|4t6L9BXzZ5bT9AVO44UTCnWeijGa40zD",
+#     "Host": "buff.163.com",
+#     "Referer": "https://buff.163.com/market/csgo",
+#     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+#     "X-Requested-With": "XMLHttpRequest"
+# }
+#         ,
+#         "headers_csgo": {
+#     "Cookie": "Device-Id=cU3NwGMCWrayZcEqoV0G; Locale-Supported=zh-Hans; game=csgo; NTES_YD_SESS=ejo4yGvperDa_BERC7Ed_WK6QO4sy0JDwsNTu.GSqqxtd3GbdnHABw45d8iQhwN093unZS_pcDarL5AIspzKOIK3.gpP2Yx.4kqZONHey6npAhp2qKSfoiSjz4n2qK3wNRcPgwxaN2v2wOu.9.ZhFO4QiFDikRwtLPmpzv0BaBB81AskldA9JXKAZnhEa.6rOitx92U8jqxDbtSnqlQETRVRpO_D7xprDWR8NzRcNgim4; S_INFO=1766906853|0|0&60##|16670494952; P_INFO=16670494952|1766906853|1|netease_buff|00&99|gud&1766302068&netease_buff#gud&440100#10#0#0|&0||16670494952; r_ntcid=730:222; qr_code_verify_ticket=194FwfG16d39c99830672c3870dea3d332d8; remember_me=U1084862224|4t6L9BXzZ5bT9AVO44UTCnWeijGa40zD; session=1-bk4bqoRLOrnWcvrYAqTQ9Ab0Bq7eJtenEycVUkQYrCUQ2020028488",
+#     "Referer": "https://buff.163.com/",
+#     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0   Safari/537.36"
+# }
+#     }
+]
+
+
+
+
 query_params = {"from": "market"}
 
 # 传入时间戳给notification接口
@@ -151,7 +195,7 @@ def try_again(headers2, request_url, params, max_retries=5, delay=1):
         try:
             res = requests.get(url=request_url, headers=headers2, params=params)
             cf3, sid3 = get_csrf(res)
-            newheaders = update_headers_with_csrf(headers, cf3, sid3)
+            newheaders = update_headers_with_csrf(headers2, cf3, sid3)
             data = res.json()["data"]["items"]
             break
         except (json.JSONDecodeError, KeyError) as e:
