@@ -185,10 +185,10 @@ while True:
     # else:
     #     res3, data, new_headers = try_again(new_headers, first_url, market_params_jiu_jin)
 
-    if i % 2 != 0:
-        res3, data, new_headers = try_again(new_headers, first_url, market_params)
-    else:
-        res3, data, new_headers = try_again(new_headers, first_url, market_params_special)
+    # if i % 2 != 0:
+    #     res3, data, new_headers = try_again(new_headers, first_url, market_params)
+    # else:
+    res3, data, new_headers = try_again(new_headers, first_url, market_params_special)
 
     if data is not None:
         print('************')
