@@ -89,7 +89,7 @@ i = 0
 previous_guns = set()
 
 
-def query_gun(gun, head):
+def query_gun(gun, head,market_res):
     try:
         gun_id = gun['id']
         name = gun['name']
@@ -98,8 +98,9 @@ def query_gun(gun, head):
 
         # print(res3.json())
         buy_paint = search_wearpaint(name, buy_guns)
-        cf4, sid4 = get_csrf(res3)
-        new_headers = update_headers_with_csrf(headers, cf4, sid4)
+        # print(buy_paint)
+        cf4, sid4 = get_csrf(market_res)
+        new_headers = update_headers_with_csrf(head, cf4, sid4)
 
         search_params = {"game": "csgo",
                          "goods_id": f"{gun_id}",
@@ -110,162 +111,71 @@ def query_gun(gun, head):
                          "_": int(time.time() * 1000)
                          }
 
-        res5, data, new_headers = try_again(new_headers, search_url, search_params)
+        res5, data2, new_headers = try_again(new_headers, search_url, search_params)
         cf5, sid5 = get_csrf(res5)
+        # print(data)
         # 得到磨损数据
         st_price = res5.json()['data']["goods_infos"][f"{gun_id}"]['steam_price_cny']
-        if data is not None and buy_paint is not None:
-            first_item = True  # 添加一个标志，表示是否是第一个 item
-            for item in data[:4]:
+        if data2 is not None and buy_paint is not None:
+            for item in data2[:5]:
                 paintwear = float(item['asset_info']['paintwear'])
                 price = float(item['price'])  # 购买价格
                 sell_id = item['id']
                 sp, st = decide_buy(gun['sell_min_price'], st_price)
-                if first_item:
-                    first_item = False
-                    if price <= sp and price <= st:
-                        if paintwear <= buy_paint or (price < quick_price and sell_num > 80):
-                            print('yes1')
-                            new_headers = update_headers_with_csrf(headers, cf5, sid5)
-                            new_headers["X-Csrftoken"] = cf5
-                            buy_params_last = {
-                                "game": "csgo",
-                                "goods_id": f"{gun_id}",
-                                "sell_order_id": f"{sell_id}",
-                                "price": f"{price}",
-                                "pay_method": f'{49}',  # 支付方式
-                                "allow_tradable_cooldown": "0",
-                                "token": "",
-                                "cdkey_id": "",
-                                "hide_non_epay": "false"
-                            }
-                            res7 = requests.post(url=buy_last, headers=new_headers,
-                                                 json=buy_params_last)  # 支付结束
-                            response_data = res7.json()
-                            print('第一个支付宝', response_data)
-                            if response_data.get("code") == "OK":
-                                # trade_id = response_data.get("data", {}).get("id")
-                                # auto_params = {
-                                #     "bill_order_id": f"{trade_id}",
-                                #     "_": int(time.time() * 1000)
-                                # }
-                                # print(f"获取到的id为, {trade_id}")
-                                # cf6, sid6 = get_csrf(res7)
-                                # new_headers = update_headers_with_csrf(headers, cf6, sid6)
-                                # res8 = requests.get(url=auto_buy, headers=new_headers, params=auto_params)
-                                # response_data = res8.json()
-                                # print('auto', response_data)
-                                logger.info(f'购买成功1{name},{paintwear},{res7},{res7.text}')
-                                continue
-                            print('1', response_data)
-                            # if response_data.get("error") == "该饰品暂不支持此支付方式":
-                            # 尝试使用BUFF余额支付
-                            buy_params_last["pay_method"] = f'{1}'  # BUFF余额支付方式
-                            res7 = requests.post(url=buy_last, headers=new_headers, json=buy_params_last)
-                            response_data = res7.json()
-                            print('1', response_data)
-                            if response_data.get("code") == "OK":
-                                logger.info(f'购买成功2{name},{paintwear},{res7},{res7.text}')
-                                continue
-                            print(
-                                f"没有合适的支付方式,可买的枪为{gun['name']},磨损: {paintwear}, 价格: {price}")
-                            logger.info(
-                                f"没有合适的支付方式,可买的枪为{gun['name']},磨损: {paintwear}, 价格: {price}")
+                # print(f"磨损：{paintwear},价格{price}，名字{name}")
+                if price > sp or price > st:
+                    logger.info(f"价格不合适: {name}, 价格: {price}")
+                    continue
+                is_first = (item == data2[0])
+                is_wear_ok = (paintwear <= buy_paint)
+                is_quick_buy_ok = is_first and (price < quick_price and sell_num > 80)
 
-                        else:
-                            logger.info(
-                                f"磨损不合适{name},磨损为{paintwear},可买最大磨损为{buy_paint},价格为{price},quick{quick_price},real,{gun['quick_price']}")
+                if is_wear_ok or is_quick_buy_ok:
+                    # 3. 构造统一的支付参数
+                    new_headers = update_headers_with_csrf(headers, cf5, sid5)
+                    new_headers["X-Csrftoken"] = cf5
+
+                    buy_params = {
+                        "game": "csgo",
+                        "goods_id": f"{gun_id}",
+                        "sell_order_id": f"{sell_id}",
+                        "price": f"{price}",
+                        "pay_method": "49",  # 先尝试支付宝
+                        "allow_tradable_cooldown": "0",
+                        "hide_non_epay": "ture"
+                    }
+
+                    # 4. 封装支付尝试逻辑 (定义一个内部函数或直接循环尝试)
+                    for method in ["49", "63"]:  # 49:支付宝, 63:余额
+                        buy_params["pay_method"] = method
+                        res = requests.post(url=buy_last, headers=new_headers, json=buy_params)
+                        resp_data = res.json()
+                        print(resp_data)
+                        logger.info(resp_data)
+                        if resp_data.get("code") == "OK":
+                            logger.info(f"购买成功! 方式:{method}, 饰品:{name}, 磨损:{paintwear}")
+                            break  # 支付成功，跳出支付方式循环
                     else:
-                        logger.info(
-                            f"该枪支: {name}不可购买,价格不合适价格: {price},上限{sp},steam处理价格{st}")
-                        continue
+                        # 如果两个支付方式都走完了还没成功
+                        logger.info(f"所有支付方式均失败: {name},磨损：{paintwear}")
                 else:
-                    if price <= sp and price <= st:
-                        if paintwear <= buy_paint:
-                            print('yes')
-                            new_headers = update_headers_with_csrf(headers, cf5, sid5)
-                            new_headers["X-Csrftoken"] = cf5
-                            buy_params_last = {
-                                "game": "csgo",
-                                "goods_id": f"{gun_id}",
-                                "sell_order_id": f"{sell_id}",
-                                "price": f"{price}",
-                                "pay_method": f'{49}',  # 支付方式
-                                "allow_tradable_cooldown": "0",
-                                "token": "",
-                                "cdkey_id": "",
-                                "hide_non_epay": "false"
-                            }
-                            res7 = requests.post(url=buy_last, headers=new_headers,
-                                                 json=buy_params_last)  # 支付结束
-                            response_data = res7.json()
-                            print('非第一个，支付宝', response_data)
-                            if response_data.get("code") == "OK":
-                                # trade_id = response_data.get("data", {}).get("id")
-                                # auto_params = {
-                                #     "bill_order_id": f"{trade_id}",
-                                #     "_": int(time.time() * 1000)
-                                # }
-                                # print(f"获取到的id为, {trade_id}")
-                                # cf6, sid6 = get_csrf(res7)
-                                # new_headers = update_headers_with_csrf(headers, cf6, sid6)
-                                # res8 = requests.get(url=auto_buy, headers=new_headers, params=auto_params)
-                                # response_data = res8.json()
-                                # print('auto', response_data)
-                                logger.info(f'购买成功2{name},{paintwear},{res7},{res7.text}')
-                                continue
-                            # if response_data.get("error") == "该饰品暂不支持此支付方式":
-                            # 尝试使用BUFF余额支付
-                            buy_params_last["pay_method"] = f'{1}'  # BUFF余额支付方式
-                            res7 = requests.post(url=buy_last, headers=new_headers, json=buy_params_last)
-                            response_data = res7.json()
-                            print('2', response_data)
-                            if response_data.get("code") == "OK":
-                                logger.info(f'购买成功2{name},{paintwear},{res7},{res7.text}')
-                                continue
-                            print(
-                                f"没有合适的支付方式,可买的枪为{gun['name']},磨损: {paintwear}, 价格: {price}")
-                            logger.info(
-                                f"没有合适的支付方式,可买的枪为{gun['name']},磨损: {paintwear}, 价格: {price}")
-
-                        else:
-                            logger.info(f'磨损不合适{name},磨损为{paintwear},可买最大磨损为{buy_paint}')
-                    else:
-                        logger.info(
-                            f"该枪支: {name}不可购买,价格不合适价格: {price},上限{sp},steam处理价格{st}")
-                        continue
-
+                    logger.info(f"磨损不合适: {name}")
         return gun['name'], gun['sell_min_price']
     except requests.RequestException as e:
         return str(e)
 
 
 while True:
-    j = (i // 4) % len(ACCOUNTS)
-    current_acc = ACCOUNTS[j]
     i += 1
-    # 提取当前账号的配置
-    headers = current_acc["headers"]
-    headers_csgo = current_acc["headers_csgo"]
-    print(f"\n[Account Switch] 当前使用: {current_acc['name']} (i={i}, j={j})")
-    # 通过csgo_url给notification接口产生csrf和session
-    res = requests.get(url=csgo_url, headers=headers_csgo)
 
-    # 获取csrf_token，通过notification接口，不需要自带csrf_token
+    # 通过csgo_url给后续接口产生csrf和session
+    res = requests.get(url=csgo_url, headers=headers_csgo)
     cf1, sid1 = get_csrf(res)
 
-    # 传递产生的csrf和session给notification接口
     new_headers = update_headers_with_csrf(headers, cf1, sid1)
 
-    # 传递notification产生的csrf和session给市场接口
-    res2 = requests.get(url=notification_url, headers=new_headers, params=base_params)
-
-    # 传递给市场刷新接口
-    cf2, sid2 = get_csrf(res2)
-    new_headers = update_headers_with_csrf(headers, cf2, sid2)
-
     # 防止请求过快
-    # random_sleep(0,1)
+    random_sleep(0,2)
     f1 = time.time() * 1000
 
     # 市场刷新接口，传入参数为崭新，略磨，皮肤隐秘程度，设置价格等
@@ -275,15 +185,14 @@ while True:
     # else:
     #     res3, data, new_headers = try_again(new_headers, first_url, market_params_jiu_jin)
 
-    # if i % 2 != 0:
-    #     res3, data, new_headers = try_again(new_headers, first_url, market_params)
-    # else:
-    res3, data, new_headers = try_again(new_headers, first_url, market_params_special)
-    # print('执行到现在为:',
-    #       int(time.time() * 1000) - f1,
-    #       'ms')
+    if i % 2 != 0:
+        res3, data, new_headers = try_again(new_headers, first_url, market_params)
+    else:
+        res3, data, new_headers = try_again(new_headers, first_url, market_params_special)
+
     if data is not None:
         print('************')
+        # print(data)
         current_guns = set()
         # 存储市场接口返回来最新枪的数据，枪名，最低价格，在售数量
         guns = []
@@ -299,12 +208,12 @@ while True:
                 }
                 guns.append(gun)
                 current_guns.add(gun_name)
-
+        # print(guns)
         # 买枪函数
 
         results = []
-        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
-            future_to_gun = {executor.submit(query_gun, gun, new_headers): gun for gun in guns}
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+            future_to_gun = {executor.submit(query_gun, gun, new_headers,res3): gun for gun in guns}
             for future in concurrent.futures.as_completed(future_to_gun):
                 try:
                     result = future.result()
@@ -312,7 +221,7 @@ while True:
                 except Exception as exc:
                     # print("moo")
                     logger.error(f'Generated an exception: {exc}')
-
+        # print(results)
         last_time = int(time.time() * 1000)
         print(f"这是第{i}次刷新:")
         print('程序查询时间为:', last_time - f1, 'ms')
@@ -328,4 +237,4 @@ while True:
     del guns
     del results
     del data
-    gc.collect()
+    # gc.collect()
