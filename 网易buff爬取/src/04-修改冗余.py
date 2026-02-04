@@ -185,10 +185,10 @@ while True:
     # else:
     #     res3, data, new_headers = try_again(new_headers, first_url, market_params_jiu_jin)
 
-    # if i % 2 != 0:
-    #     res3, data, new_headers = try_again(new_headers, first_url, market_params)
-    # else:
-    res3, data, new_headers = try_again(new_headers, first_url, market_params_special)
+    if i % 2 != 0:
+        res3, data, new_headers = try_again(new_headers, first_url, market_params)
+    else:
+        res3, data, new_headers = try_again(new_headers, first_url, market_params_special)
 
     if data is not None:
         print('************')
@@ -196,7 +196,7 @@ while True:
         current_guns = set()
         # 存储市场接口返回来最新枪的数据，枪名，最低价格，在售数量
         guns = []
-        for item in data[:2]:
+        for item in data[:6]:
             gun_name = item.get('name', None)
             if gun_name not in previous_guns:
                 gun = {
@@ -227,8 +227,8 @@ while True:
         print('程序查询时间为:', last_time - f1, 'ms')
         print('程序运行时间为:', last_time - start_time, 'ms')
         previous_guns = current_guns
-    if i % 12 == 0:
-        time.sleep(10)
+    if i % 2 == 0:
+        time.sleep(30)
     if i % 100 == 0:
         time.sleep(15)
     if i % 400 == 0:
