@@ -196,7 +196,7 @@ while True:
         current_guns = set()
         # 存储市场接口返回来最新枪的数据，枪名，最低价格，在售数量
         guns = []
-        for item in data[:6]:
+        for item in data[:5]:
             gun_name = item.get('name', None)
             if gun_name not in previous_guns:
                 gun = {
@@ -228,7 +228,7 @@ while True:
         print('程序运行时间为:', last_time - start_time, 'ms')
         previous_guns = current_guns
     if i % 2 == 0:
-        time.sleep(30)
+        time.sleep(60)
     if i % 100 == 0:
         time.sleep(15)
     if i % 400 == 0:
